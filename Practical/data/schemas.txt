@@ -1,0 +1,10 @@
+
+CREATE TABLE user_balance
+(
+    id SERIAL PRIMARY KEY,
+    balance TEXT NOT NULL DEFAULT 0,
+    address TEXT NOT NULL,
+    transaction_hash TEXT NOT NUL,
+    created_at TIMESTAMP DEFAULT now()
+);
+GRANT ALL PRIVILEGES ON TABLE user_balance TO postgres;

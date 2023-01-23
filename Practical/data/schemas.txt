@@ -7,4 +7,17 @@ CREATE TABLE user_balance
     transaction_hash TEXT NOT NUL,
     created_at TIMESTAMP DEFAULT now()
 );
+
+CREATE TABLE transfer_events
+(
+    id SERIAL PRIMARY KEY,
+    event_args TEXT NOT NULL,
+    is_checked BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT now(),
+    transaction_hash TEXT NOT NULL,
+    event_name TEXT NOT NULL,
+    contract_address TEXT NOT NULL
+);
+
+GRANT ALL PRIVILEGES ON TABLE transfer_events TO postgres;
 GRANT ALL PRIVILEGES ON TABLE user_balance TO postgres;

@@ -1,2 +1,5 @@
 .history
 .DS_Store
+__pycache__
+Basic/__pycache__
+Practical/__pycache__

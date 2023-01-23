@@ -1,5 +1,4 @@
 import psycopg2
-import datetime
 import json
 
 """
@@ -10,7 +9,7 @@ def get_dict_file(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-class DataBase_Manager:
+class DataBaseManager:
     def __init__(self):
         self.database_info = get_dict_file("./files/database_params.json")
         self.env = "TEST"
@@ -40,14 +39,18 @@ class DataBase_Manager:
             self.cursor.close()
             self.connection.close()
         
-    def execute(self, query, item_tupple):
+    def execute(self, query, item_tupple=None):
         try:
             self.connect()
-            self.cursor.execute(query, item_tupple)
+            if item_tupple is None:
+                self.cursor.execute(query)
+            else:
+                self.cursor.execute(query, item_tupple)
             self.connection.commit()
             self.disconnect()
         except Exception as e:
             raise e
+        
     
     def select_all(self, query):
         try:

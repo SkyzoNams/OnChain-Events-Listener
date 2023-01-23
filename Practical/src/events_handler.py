@@ -4,7 +4,7 @@ import threading
 import eth_event
 from web3 import Web3
 from src.utils import get_dict_file
-from src.database_manager import DataBase_Manager
+from src.database_manager import DataBaseManager
 from dotenv import load_dotenv
 load_dotenv()
 logging.addLevelName(24, "CONNECTION")
@@ -25,6 +25,7 @@ class Events_Listener():
         self.threads = []
         self.max_threads = 8
         self.last_stored_block_number = None
+        self.infura_key = "1387510b906e47ba8ccdcef8952e6ff6"
 
 
     def connect_to_provider(self):
@@ -36,14 +37,14 @@ class Events_Listener():
         try:
             time.sleep(0.01)
             self.web3 = Web3(Web3.HTTPProvider(
-                "https://mainnet.infura.io/v3/0a49990ca1114f4da1bdfa3fb8bdccff"))
+                "https://mainnet.infura.io/v3/" + self.infura_key))
             tries = 5
             # Check for connection and retry if unsuccessful
             while self.web3.isConnected() is False and tries >= 0:
                 logging.info("waiting for web3 connection...")
                 time.sleep(2)
                 self.web3 = Web3(Web3.HTTPProvider(
-                    "https://mainnet.infura.io/v3/0a49990ca1114f4da1bdfa3fb8bdccff"))
+                    "https://mainnet.infura.io/v3/" + self.infura_key))
                 tries -= 1
             time.sleep(0.01)
             return self.web3
@@ -114,14 +115,12 @@ class Events_Listener():
         """
         logging.info("searching events on block #" + str(block_num))
         block = self.provider().eth.get_block(block_num)
-        self.decode_block_transactions_hash(block, block_num)
+        self.decode_block_transactions_hash(block)
         
-    def decode_block_transactions_hash(
-            self, current_block, current_block_number: int):
+    def decode_block_transactions_hash(self, current_block: int):
         """
         @Notice: This method will decode the transaction hashes in a block to find events
         @param current_block: The current block to explore
-        @param current_block_number: The current block number
         @Dev: We iterate over the block's transaction hashes and for each one, we call the get_transaction_receipt method on the web3 provider to get the transaction receipt, then we iterate over the logs in the receipt and try to decode them using the topic_map. If the log is successfully decoded, we print the decoded event.
         """
         for tx_hash in current_block['transactions']:
@@ -189,6 +188,7 @@ class Events_Listener():
         """
         for event in events:
             if event['name'] == "Transfer":
+                self.insert_event(event, transaction_hash)
                 self.insert_user_ballance(event['data'][0]['value'], transaction_hash)
                 self.insert_user_ballance(event['data'][1]['value'], transaction_hash)
             
@@ -210,16 +210,30 @@ class Events_Listener():
         @Notice: This function insert or updates the balance of a specific address 
         in the user_balance table.
         @param address: The address you want to insert/update the balance
+        @param transaction_hash: The event transaction_hash
         @Dev: This function uses the get_balance function to get the balance of the address
         """
-        DataBase_Manager().execute("""INSERT INTO user_balance (balance, address, transaction_hash)
+        DataBaseManager().execute(query="""INSERT INTO user_balance (balance, address, transaction_hash)
             SELECT %s, %s, %s
             WHERE NOT EXISTS (
                 SELECT 1 FROM user_balance
-                WHERE address = %s AND transaction_hash = %s);""", (self.get_balance(address), address, transaction_hash, address, transaction_hash))
-        logging.log(26, "new record inserted")
+                WHERE address = %s AND transaction_hash = %s);""", item_tupple=(self.get_balance(address), address, transaction_hash, address, transaction_hash))
+        logging.log(26, "new user balance inserted")
         
-
+    def insert_event(self, event, transaction_hash):
+        """
+        @Notice: This function insert or updates the event record
+        in the transfer_events table.
+        @param event: The event you want to insert/update
+        @param transaction_hash: The event transaction_hash
+        """
+        DataBaseManager().execute(query="""INSERT INTO transfer_events (event_args, transaction_hash, event_name, contract_address)
+            SELECT %s, %s, %s, %s
+            WHERE NOT EXISTS (
+                SELECT 1 FROM transfer_events
+                WHERE transaction_hash = %s);""", item_tupple=(str(event['data']), transaction_hash, event['name'], self.contract_address, transaction_hash))
+        logging.log(26, "new transfer events record inserted")
+        
     def get_contract(self):
         """
         @Notice: This function returns the contract object
@@ -240,32 +254,3 @@ class Events_Listener():
         total_supply_function = contract.functions.totalSupply()
         # Call the function and get the total supply
         return total_supply_function.call()
-
-    def get_holders(self, limit=None):
-        query = """WITH last_created AS (
-            SELECT address, max(created_at) as last_created
-            FROM user_balance
-            GROUP BY address
-        )
-        SELECT user_balance.*
-        FROM user_balance
-        JOIN last_created
-        ON user_balance.address = last_created.address
-        AND user_balance.created_at = last_created.last_created"""
-        if limit is not None:
-            query +=  " LIMIT " + str(limit)
-
-    def get_top_100_holders(self):
-        query = "SELECT * FROM user_balance ORDER BY balance ASC LIMIT 100"
-    
-    def get_holders_weekly_change(self, limit=None):
-        query = """WITH weekly_change AS (
-            SELECT address,
-                balance - lag(balance) over (partition by address order by created_at) as weekly_change
-            FROM user_balance
-        )
-        SELECT *, weekly_change
-        FROM weekly_change"""
-        if limit is not None:
-            query +=  " LIMIT " + str(limit)
-    

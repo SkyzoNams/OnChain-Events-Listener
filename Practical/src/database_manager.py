@@ -39,23 +39,37 @@ class DataBaseManager:
             self.cursor.close()
             self.connection.close()
         
-    def execute(self, query, item_tupple=None):
+    def execute(self, query, item_tuple=None):
+        """
+        @Notice: This function execute the input query
+        @param query: the query string
+        @param item_tupple: tuple of values to be inserted into the query
+        @dev: This function connects to the database, execute the query and commit the changes
+        """
         try:
             self.connect()
-            if item_tupple is None:
+            if item_tuple is None:
                 self.cursor.execute(query)
             else:
-                self.cursor.execute(query, item_tupple)
+                self.cursor.execute(query, item_tuple)
             self.connection.commit()
             self.disconnect()
         except Exception as e:
             raise e
-        
-    
-    def select_all(self, query):
+
+    def select_all(self, query, item_tuple=None):
+        """
+        @Notice: This function returns all the rows of the selected query
+        @param query: the query string
+        @dev: This function connects to the database, execute the query and return all the rows
+        @return: list of tuples representing the rows of the selected query
+        """
         try:
             self.connect()
-            self.cursor.execute(query)
+            if item_tuple is None:
+                self.cursor.execute(query)
+            else:
+                self.cursor.execute(query, item_tuple)            
             items = self.cursor.fetchall()
             self.disconnect()
             return items

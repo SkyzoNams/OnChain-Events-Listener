@@ -1,8 +1,6 @@
 import pytest
 import json
 import eth_event
-import time
-import logging
 from src.events_handler import Events_Listener
 from web3 import Web3
 
@@ -32,10 +30,13 @@ class TestEventsListener:
         web3 = listener.connect_to_provider()
         assert isinstance(web3, Web3)
         assert web3.isConnected() == True
+        assert web3 is not None
 
     def test_provider(self, listener):
         web3 = listener.provider()
         assert isinstance(web3, Web3)
         assert web3.isConnected() == True
+        assert web3 is not None
 
-    
+    def test_fetch_events(self, listener):
+        pass

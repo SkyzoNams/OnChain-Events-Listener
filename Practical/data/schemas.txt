@@ -2,10 +2,11 @@
 CREATE TABLE user_balance
 (
     id SERIAL PRIMARY KEY,
-    balance TEXT NOT NULL DEFAULT 0,
+    balance FLOAT NOT NULL,
     address TEXT NOT NULL,
-    transaction_hash TEXT NOT NUL,
-    created_at TIMESTAMP DEFAULT now()
+    transaction_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    transaction_date TIMESTAMP NOT NULL
 );
 
 CREATE TABLE transfer_events
@@ -16,7 +17,8 @@ CREATE TABLE transfer_events
     created_at TIMESTAMP DEFAULT now(),
     transaction_hash TEXT NOT NULL,
     event_name TEXT NOT NULL,
-    contract_address TEXT NOT NULL
+    contract_address TEXT NOT NULL,
+    transaction_date TIMESTAMP NOT NULL
 );
 
 GRANT ALL PRIVILEGES ON TABLE transfer_events TO postgres;

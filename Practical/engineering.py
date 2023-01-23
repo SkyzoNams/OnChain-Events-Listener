@@ -7,16 +7,9 @@ class Engineering():
         pass
     
     def get_holders(self, limit=None):
-        query = """WITH last_created AS (
-            SELECT address, max(transaction_date) as last_created
+        query = """SELECT DISTINCT address, id, balance, transaction_hash, created_at, transaction_date
             FROM user_balance
-            GROUP BY address
-        )
-        SELECT user_balance.*
-        FROM user_balance
-        JOIN last_created
-        ON user_balance.address = last_created.address
-        AND user_balance.transaction_date = last_created.last_created"""
+            ORDER BY transaction_date DESC"""
         if limit is not None:
             query +=  " LIMIT " + str(limit)
         return DataBaseManager().select_all(query=query)
@@ -24,19 +17,8 @@ class Engineering():
     def get_top_100_holders(self):
         total_supply = Events_Listener().get_total_supply()
         total_supply = Events_Listener().provider().fromWei(total_supply, 'ether')
-        query = """WITH last_created AS (
-                SELECT address, max(transaction_date) as last_created
-                FROM user_balance
-                GROUP BY address
-            ), total_supply AS (
-                SELECT """ + str(total_supply) + """ AS total_supply
-            )
-            SELECT user_balance.*, (user_balance.balance::numeric / total_supply.total_supply) * 100 as percentage_of_total_supply
-            FROM user_balance
-            JOIN last_created
-            ON user_balance.address = last_created.address
-            AND user_balance.transaction_date = last_created.last_created
-            JOIN total_supply
+        query = """SELECT address, balance, (balance / """ + str(total_supply) + """) * 100 as "percent_of_total_supply"
+            FROM (SELECT DISTINCT ON (address) address, balance, transaction_date FROM user_balance ORDER BY address, transaction_date DESC) as last_transaction
             ORDER BY balance DESC
             LIMIT 100;"""
         return DataBaseManager().select_all(query=query)
@@ -56,4 +38,4 @@ class Engineering():
 
     
 if __name__ == "__main__":
-    print(Engineering().get_holders_weekly_change(20))
+    print(Engineering().get_top_100_holders())

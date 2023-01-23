@@ -24,8 +24,8 @@ class Events_Listener():
         # Thread pool for fetch_events_in_blocks
         self.threads = []
         self.max_threads = 8
-        self.last_stored_block_number = None
         self.infura_key = "178f1d53d56842baaf55e41ec9efec61"
+        self.db_manager = DataBaseManager()
 
 
     def connect_to_provider(self):
@@ -115,7 +115,7 @@ class Events_Listener():
         block = self.provider().eth.get_block(block_num)
         self.decode_block_transactions_hash(block, block_num)
         
-    def decode_block_transactions_hash(self, current_block: int, block_number: int):
+    def decode_block_transactions_hash(self, current_block, block_number: int):
         """
         @Notice: This method will decode the transaction hashes in a block to find events
         @param current_block: The current block to explore
@@ -131,7 +131,7 @@ class Events_Listener():
                     continue
                 if events:
                     timestamp = self.provider().eth.getBlock(receipt['blockNumber']).timestamp
-                    self.handle_event(events, tx_hash, datetime.fromtimestamp(timestamp), block_number) #tx_hash.hex()
+                    self.handle_event(events, tx_hash.hex(), datetime.fromtimestamp(timestamp), block_number)
 
     def is_one_of_us(self, receipt):
         """
@@ -151,8 +151,7 @@ class Events_Listener():
         """
         logging.log(25, "waiting for not explored blocks...")
         while last_block_number < last_processed_block_number:
-            last_block_number = self.provider().eth.get_block('latest')[
-                'number']
+            last_block_number = self.get_last_block_number()
         logging.log(25, "new blocks found, will explore now from #" +
                     str(last_processed_block_number) + " to #" + str(last_block_number))
 
@@ -187,9 +186,9 @@ class Events_Listener():
         """
         for event in events:
             if event['name'] == "Transfer":
-                #self.insert_event(event, transaction_hash, timestamp)
-                self.insert_user_ballance(event['data'][0]['value'], transaction_hash, timestamp, block_number)
-                self.insert_user_ballance(event['data'][1]['value'], transaction_hash, timestamp, block_number)
+                self.insert_event(event, transaction_hash, timestamp)
+                self.insert_user_balance(event['data'][0]['value'], transaction_hash, timestamp, block_number)
+                self.insert_user_balance(event['data'][1]['value'], transaction_hash, timestamp, block_number)
                 
             
     def get_balance(self, address, block_number):
@@ -199,11 +198,11 @@ class Events_Listener():
         @return: The balance of the address in ether unit
         """
         # Call the function and get the balance
-        balance_in_wei = self.provider().eth.getBalance(Web3.toChecksumAddress(address), block_number)
+        balance_in_wei = self.provider().eth.get_balance(Web3.toChecksumAddress(address), block_number)
         balance_in_ether = self.web3.fromWei(balance_in_wei, 'ether')
         return balance_in_ether
     
-    def insert_user_ballance(self, address, transaction_hash, timestamp, block_number):
+    def insert_user_balance(self, address, transaction_hash, timestamp, block_number):
         """
         @Notice: This function insert or updates the balance of a specific address 
         in the user_balance table.
@@ -211,7 +210,7 @@ class Events_Listener():
         @param transaction_hash: The event transaction_hash
         @Dev: This function uses the get_balance function to get the balance of the address
         """
-        DataBaseManager().execute(query="""INSERT INTO user_balance (balance, address, transaction_hash, transaction_date)
+        self.db_manager.execute(query="""INSERT INTO user_balance (balance, address, transaction_hash, transaction_date)
             SELECT %s, %s, %s, %s
             WHERE NOT EXISTS (
                 SELECT 1 FROM user_balance
@@ -225,29 +224,20 @@ class Events_Listener():
         @param event: The event you want to insert/update
         @param transaction_hash: The event transaction_hash
         """
-        DataBaseManager().execute(query="""INSERT INTO transfer_events (event_args, transaction_hash, event_name, contract_address, transaction_date)
+        self.db_manager.execute(query="""INSERT INTO transfer_events (event_args, transaction_hash, event_name, contract_address, transaction_date)
             SELECT %s, %s, %s, %s, %s
             WHERE NOT EXISTS (
                 SELECT 1 FROM transfer_events
                 WHERE transaction_hash = %s);""", item_tuple=(str(event['data']), transaction_hash, event['name'], self.contract_address, timestamp, transaction_hash))
         logging.log(26, "new transfer events record inserted")
-        
-    def get_contract(self):
-        """
-        @Notice: This function returns the contract object
-        @Dev: This function uses the provider method to connect to the Ethereum network
-        @return: contract object
-        """
-        # Create the contract object
-        return self.provider().eth.contract(address=self.contract_address, abi=self.contract_abi)
 
     def get_total_supply(self):
         """
         @Notice: This function returns the total supply of the ERC20 token
-        @Dev: This function uses the get_contract function to get the contract object
+        @Dev: This function uses the web3.eth.contract function to get the contract object
         @return: total supply of the ERC20 token
         """
-        contract = self.get_contract()
+        contract = self.provider().eth.contract(address=self.contract_address, abi=self.contract_abi)
         # The function that returns the total supply
         total_supply_function = contract.functions.totalSupply()
         # Call the function and get the total supply

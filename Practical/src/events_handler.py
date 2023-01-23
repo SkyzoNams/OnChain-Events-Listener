@@ -35,15 +35,13 @@ class Events_Listener():
         the contract using the web3 provider
         """
         try:
-            self.web3 = Web3(Web3.HTTPProvider(
-                "https://mainnet.infura.io/v3/" + self.infura_key))
+            self.web3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/" + self.infura_key))
             tries = 5
             # Check for connection and retry if unsuccessful
             while self.web3.isConnected() is False and tries >= 0:
                 logging.info("waiting for web3 connection...")
                 time.sleep(2)
-                self.web3 = Web3(Web3.HTTPProvider(
-                    "https://mainnet.infura.io/v3/" + self.infura_key))
+                self.web3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/" + self.infura_key))
                 tries -= 1
             return self.web3
         except Exception as e:
@@ -68,17 +66,13 @@ class Events_Listener():
             last_processed_block_number = None
             while 42:
                 last_processed_block_number, last_block_number = self.get_last_processed_block_number(last_processed_block_number)
-                logging.log(25, "from #" + str(last_processed_block_number) +
-                            " to #" + str(last_block_number))
-                last_processed_block_number = self.fetch_events_in_blocks(
-                    last_processed_block_number, last_block_number)
-                self.waiting_for_new_blocks(
-                    last_processed_block_number, last_block_number)
+                logging.log(25, "from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
+                last_processed_block_number = self.fetch_events_in_blocks(last_processed_block_number, last_block_number)
+                self.waiting_for_new_blocks( last_processed_block_number, last_block_number)
         except Exception as e:
             raise e
 
-    def fetch_events_in_blocks(
-            self, last_processed_block_number: int, last_block_number: int):
+    def fetch_events_in_blocks(self, last_processed_block_number: int, last_block_number: int):
         """
         @Notice: Iterate over block numbers to decode their transaction hashes and find events
         @param: last_processed_block_number: int : the last block number that was processed
@@ -96,8 +90,7 @@ class Events_Listener():
                         if not t.is_alive():
                             self.threads.remove(t)
                 # Start a new thread for the current block
-                t = threading.Thread(target=self.explore_block, args=(
-                    last_processed_block_number,))
+                t = threading.Thread(target=self.explore_block, args=(last_processed_block_number,))
                 t.start()
                 self.threads.append(t)
                 last_processed_block_number += 1
@@ -125,8 +118,7 @@ class Events_Listener():
             receipt = self.provider().eth.get_transaction_receipt(tx_hash)
             if self.is_one_of_us(receipt):
                 try:
-                    events = eth_event.decode_logs(
-                        receipt.logs, self.topic_map)
+                    events = eth_event.decode_logs(receipt.logs, self.topic_map)
                 except BaseException:
                     continue
                 if events:
@@ -152,8 +144,7 @@ class Events_Listener():
         logging.log(25, "waiting for not explored blocks...")
         while last_block_number < last_processed_block_number:
             last_block_number = self.get_last_block_number()
-        logging.log(25, "new blocks found, will explore now from #" +
-                    str(last_processed_block_number) + " to #" + str(last_block_number))
+        logging.log(25, "new blocks found, will explore now from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
 
     def get_last_processed_block_number(self, last_processed_block_number):
         """

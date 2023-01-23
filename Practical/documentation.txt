@@ -56,7 +56,7 @@ We use the python psycopg2 library to access the database.
 
 # Engineering team
 
-In order to let the data consumed by the engineering team, we have created the Engineering class.
+In order to let the data consumed by the engineering team, we have created the Engineering class (/engineering.py).
 
 This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, 
 token holder's weekly balance change (in %).

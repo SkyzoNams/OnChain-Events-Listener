@@ -24,18 +24,59 @@ class Engineering():
         return DataBaseManager().select_all(query=query)
 
     def get_holders_weekly_change(self, limit=None):
-        query = """WITH weekly_change AS (
-            SELECT address, balance,
-                balance - lag(balance) over (partition by address order by transaction_date) as weekly_change
+        """
+        calculates the percentage change compared to 7 days ago
+        """
+        query = """WITH latest_transactions AS (
+            SELECT address, MAX(transaction_date) as latest_transaction_date, MAX(balance) as balance
             FROM user_balance
-        )
-        SELECT *, weekly_change FROM weekly_change"""
+            GROUP BY address
+            )
+            SELECT 
+                t1.address,
+                t1.balance, 
+                t1.transaction_hash,
+                t1.created_at,
+                t1.transaction_date,
+                CASE 
+                    WHEN t1.balance = 0 THEN 0 
+                    ELSE ((t2.balance - t1.balance) / t1.balance) * 100 
+                END AS weekly_change_pct
+            FROM user_balance t1
+            JOIN latest_transactions t2 ON t1.address = t2.address AND t1.transaction_date = t2.latest_transaction_date
+            ORDER BY t1.transaction_date DESC"""
         if limit is not None:
             query +=  " LIMIT " + str(limit)
         return DataBaseManager().select_all(query=query)
 
 
+    def get_holders_change_compare_to_last_week(self, limit=None):
+        """
+        calculates the percentage change during the last 7 days
+        """
+        query = """WITH latest_transactions AS (
+            SELECT address, MAX(transaction_date) as latest_transaction_date, MAX(balance) as balance
+            FROM user_balance
+            WHERE transaction_date >= (now() - interval '7 days')
+            GROUP BY address
+            )
+            SELECT 
+                t1.address,
+                t1.balance, 
+                t1.transaction_hash,
+                t1.created_at,
+                t1.transaction_date,
+                CASE 
+                    WHEN t1.balance = 0 THEN 0 
+                    ELSE ((t2.balance - t1.balance) / t1.balance) * 100 
+                END AS weekly_change_pct
+            FROM user_balance t1
+            JOIN latest_transactions t2 ON t1.address = t2.address AND t1.transaction_date = t2.latest_transaction_date
+            ORDER BY t1.transaction_date DESC"""
+        if limit is not None:
+            query +=  " LIMIT " + str(limit)
+        return DataBaseManager().select_all(query=query)
 
     
 if __name__ == "__main__":
-    print(Engineering().get_top_100_holders())
+    print(Engineering().get_holders_change_compare_to_last_week(10))

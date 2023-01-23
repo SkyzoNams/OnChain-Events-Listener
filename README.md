@@ -1,5 +1,5 @@
 # Overview
-The purpose of this exercise is to handle Transfer events from the The Doge NFT: DOG Token contract (0xBAac2B4491727D78D2b78815144570b9f2Fe8899).
+The purpose of this exercise is to handle Transfer events from the ([The Doge NFT: DOG Token](https://etherscan.io/address/0xbaac2b4491727d78d2b78815144570b9f2fe8899))contract.
 
 A Python program has been implemented in order to index the Transfer events and store the user balance.
 
@@ -28,7 +28,7 @@ This example will search for Transfer events from the block 13140651 to the bloc
 This example will search for Transfer events from the last mined block and continue to the next mined block:
     <p><em>python blocks_listener.py</em></p>
 
-The program can not be executed with only an end block parameter (-to)
+The program can not be executed with only an -to parameter without a -from
 
 # How it works
 
@@ -62,7 +62,7 @@ We use the python psycopg2 library to access the database.
 
 # Engineering team
 
-In order to let the data consumed by the engineering team, we have created the Engineering class [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/src/engineering.py)).
+In order to let the data consumed by the engineering team, we have created the Engineering class [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/engineering.py)).
 
 This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, token holder's weekly balance change (in %).
 

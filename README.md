@@ -1,6 +1,8 @@
 # Overview
 The purpose of this exercise is to handle Transfer events from the The Doge NFT: DOG Token contract (0xBAac2B4491727D78D2b78815144570b9f2Fe8899).
+
 A Python program has been implemented in order to index the Transfer events and store the user balance.
+
 There are two way to search for Transfer events on this contract using this program, one is to define two blocks number range to search in,
 the other one is to permanently search for new Transfer events on the last mined block.
 
@@ -18,13 +20,13 @@ the other one is to permanently search for new Transfer events on the last mined
 You can run the program by executing these commands:
 
 This example will search for Transfer events from the block 13140651 to the latest:
-    python blocks_listener.py -from 13140651
+    <em>python blocks_listener.py -from 13140651</em>
 
 This example will search for Transfer events from the block 13140651 to the block 13140751:
-    python blocks_listener.py -from 13140651 -to 13140751
+    <em>python blocks_listener.py -from 13140651 -to 13140751</em>
 
 This example will search for Transfer events from the last mined block and continue to the next mined block:
-    python blocks_listener.py
+    <em>python blocks_listener.py</em>
 
 The program can not be executed with only an end block parameter (-to)
 

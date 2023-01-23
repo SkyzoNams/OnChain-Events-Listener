@@ -34,10 +34,14 @@ The program can not be executed with only an end block parameter (-to)
 
 The Python program will connect to the Infura provider using the Python web3 library in order to get the Ethereum mainnet information, will iterate over blocks regarding two methods 
 (from a defined a block number to another block number or continuously to the latest block), then it will create a thread for each block exploration.
+
 A max_threads limit is defined and can be manually adapted to the machine on which the program is executed. If the thread limit is reached,
 we wait until a thread to finish his job before starting a new one. Each thread will iterate over the block transaction hashes, extract the receipt from it and
-if the receipt concerns our smart contract, try to decode it using the contract abi file. If the event has been well decoded, we are able to verify if the event is a Transfer
+if the receipt concerns our smart contract, try to decode it using the contract abi file. 
+
+If the event has been well decoded, we are able to verify if the event is a Transfer
 and store the information in our database.
+
 We request for each user (sender and receiver) their balance in order to store the information. For each record we want to store, we make sure first it has not been stored earlier.
 
 # Database

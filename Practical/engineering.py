@@ -7,6 +7,9 @@ class Engineering():
         pass
     
     def get_holders(self, limit=None):
+        """
+        returns the holders balance starting from the last transaction. You can add a limit in the results.
+        """
         query = """SELECT DISTINCT address, id, balance, transaction_hash, created_at, transaction_date
             FROM user_balance
             ORDER BY transaction_date DESC"""
@@ -15,6 +18,9 @@ class Engineering():
         return DataBaseManager().select_all(query=query)
 
     def get_top_100_holders(self):
+        """
+        returns the top 100 holders records with the percentage of the total supply they own
+        """
         total_supply = Events_Listener().get_total_supply()
         total_supply = Events_Listener().provider().fromWei(total_supply, 'ether')
         query = """SELECT address, balance, (balance / """ + str(total_supply) + """) * 100 as "percent_of_total_supply"
@@ -23,9 +29,9 @@ class Engineering():
             LIMIT 100;"""
         return DataBaseManager().select_all(query=query)
 
-    def get_holders_weekly_change(self, limit=None):
+    def get_holders_change_compare_to_last_week(self, limit=None):
         """
-        calculates the percentage change compared to 7 days ago
+        returns the holders balance starting from the last transaction and calculates the percentage change compared to 7 days ago. You can add a limit in the results.
         """
         query = """WITH latest_transactions AS (
             SELECT address, MAX(transaction_date) as latest_transaction_date, MAX(balance) as balance
@@ -50,9 +56,9 @@ class Engineering():
         return DataBaseManager().select_all(query=query)
 
 
-    def get_holders_change_compare_to_last_week(self, limit=None):
+    def get_holders_weekly_change(self, limit=None):
         """
-        calculates the percentage change during the last 7 days
+        returns the holders balance starting from the last transaction and calculates the percentage change during the last 7 days. You can add a limit in the results.
         """
         query = """WITH latest_transactions AS (
             SELECT address, MAX(transaction_date) as latest_transaction_date, MAX(balance) as balance
@@ -79,4 +85,4 @@ class Engineering():
 
     
 if __name__ == "__main__":
-    print(Engineering().get_holders_change_compare_to_last_week(10))
+    pass

@@ -51,23 +51,24 @@ To store the information we want, we are using a free AWS RDS database running a
 Two database tables have been created. The user_balance table in order to store user balances regarding their addresses and the transfer_events table in order
 to store the event's information.
 
-You can find the tables schemas on the /data/schemas.txt file.
+You can find the tables schemas on the /data/schemas.txt file ([here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/data/schemas.txt)).
 
 The database security is very low for this test case, the data is not encrypted and the database is publicly accessible. 
 This decision has been made because the stored data comes from a public source and because this is a test.
 
-The database credentials are stored in the /files/database_params.json. That's definitely not secured at all, but it will only be used on test mode.
+The database credentials are stored in the /files/database_params.json ([here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/files/database_params.json)). That's definitely not secured at all, but it will only be used on test mode.
 
 We use the python psycopg2 library to access the database.
 
 # Engineering team
 
-In order to let the data consumed by the engineering team, we have created the Engineering class.
+In order to let the data consumed by the engineering team, we have created the Engineering class [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/src/engineering.py)).
+
 This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, token holder's weekly balance change (in %).
 
 # Testing
 
-A complete testing suits have been implemented on the /tests/test_events_listener.py file using pytest.
+A complete testing suits have been implemented on the /tests/test_events_listener.py ([here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/tests/test_events_listener.py)) file using pytest.
 You can run all the tests by executing "pytest" on the root of the Practical folder.
 
 # Improvements
@@ -88,4 +89,4 @@ It exists a way to filter the events from a block but the method doesn't work.
 
 # Performance
 
-On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so environ 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)
+On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)

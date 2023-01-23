@@ -57,7 +57,9 @@ We use the python psycopg2 library to access the database.
 # Engineering team
 
 In order to let the data consumed by the engineering team, we have created the Engineering class.
-This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, token holder's weekly balance change (in %).
+
+This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, 
+token holder's weekly balance change (in %).
 
 # Testing
 
@@ -82,4 +84,4 @@ It exists a way to filter the events from a block but the method doesn't work.
 
 # Performance
 
-On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so environ 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)
+On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)

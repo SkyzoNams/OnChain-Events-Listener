@@ -87,6 +87,10 @@ However, the program always handles new mined blocks one after the other.
 Also, this program is iterating over blocks, then over transaction receipt and then over receipt events. That's a lot of iterations that could be interesting to reduced.
 It exists a way to filter the events from a block but the method doesn't work.
 
+Going deeper on tests.
+
+Adding engineering methods.
+
 # Performance
 
 On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)

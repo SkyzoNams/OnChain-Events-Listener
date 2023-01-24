@@ -20,7 +20,8 @@ the other one is to permanently search for new Transfer events on the last mined
 You can run the program by executing these commands:
 
 This example will search for Transfer events from the block 13140651 to the latest:
-    <p><em>python blocks_listener.py -from 13140651</em></p>
+```bash
+python blocks_listener.py -from 13140651
 
 This example will search for Transfer events from the block 13140651 to the block 13140751:
     <p><em>python blocks_listener.py -from 13140651 -to 13140751</em></p>

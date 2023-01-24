@@ -1,0 +1,16 @@
+{
+    "TEST": {
+        "db_name": "postgres",
+        "user": "postgres",
+        "password": "dummyPassword",
+        "host": "database-2.cupks95ucpo9.eu-west-3.rds.amazonaws.com",
+        "port": "5432"
+    },
+    "PROD": {
+        "db_name": "",
+        "user": "",
+        "password": "",
+        "host": "",
+        "port": ""
+    }
+}

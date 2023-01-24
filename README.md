@@ -8,6 +8,8 @@ the other one is to permanently search for new Transfer events on the last mined
 
 You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/documentation.txt) but you will the same information than here.
 
+For this exercise, two version have been made. One basic and a second one optimized (Practical-Optimized).
+
 # Getting Started
 
 1.	Clone the repo
@@ -52,8 +54,7 @@ You can deactivate the venv by doing:
 deactivate
 ```
 
-
-# How it works
+# How it works (version 1)
 
 The Python program will connect to the Infura provider using the Python web3 library in order to get the Ethereum mainnet information, will iterate over blocks regarding two methods 
 (from a defined a block number to another block number or continuously to the latest block), then it will create a thread for each block exploration.
@@ -64,6 +65,14 @@ if the receipt concerns our smart contract, try to decode it using the contract 
 
 If the event has been well decoded, we are able to verify if the event is a Transfer
 and store the information in our database.
+
+We request for each user (sender and receiver) their balance in order to store the information. For each record we want to store, we make sure first it has not been stored earlier.
+
+Also, we pre-calculate the share of the total supply owns by the user in percentage and the percentage of changes since 7 days ago.
+
+# How it works (version 2 optimized)
+
+This program will iterates over block numbers to fetch all the events for a specific ERC20 token transfer event between `last_processed_block_number` and `last_block_number` using the etherscan api.
 
 We request for each user (sender and receiver) their balance in order to store the information. For each record we want to store, we make sure first it has not been stored earlier.
 
@@ -116,6 +125,8 @@ pytest
 - We are using a free Infura provider plan that have requesting limits. Increasing the daily limit will be necessary on production. 
     - A different implementation could reduce the number of Infura api call.
 
+- For the optimized version, we are using a free etherscan api plan that have requesting limits (5 per seconds). Increasing the daily limit could be necessary on production. 
+
 - We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
     - In order to make scalable to 100 million entries there is two options:
         - Horizontally scaling the database: You can add more RDS instances to handle the increased load, and use a load balancer to distribute the incoming data across the instances.
@@ -124,17 +135,18 @@ pytest
 - This program has been made with Python. Python is not known to be the fastest programming language and some block processing can take too long if you want to process a large block range.
 However, the program always handles new mined blocks one after the other.
 
-- Also, this program is iterating over blocks, then over transaction receipt and then over receipt events. That's a lot of iterations that could be interesting to reduced.
-    - It exists a way to filter the events from a block but the method doesn't work.
-
 - Going deeper on tests.
 - Adding engineering methods.
 - Find a way to kill the thread as soon as he finished its last task.
 
 # Performance
 
+1. version 1
 On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block #13140651)
 
 The process execution could be distributed simultaneously to different machine, each one processing a batch of blocks in order to save some precious time.
 
 However, the program always handles new mined blocks one after the other.
+
+2. version 2 optimized
+The optimized version, using the etherscan api is way more faster and has less iterations.

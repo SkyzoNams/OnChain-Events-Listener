@@ -95,6 +95,7 @@ class Events_Listener():
             results_per_page = 1000
             current_page = 1
             start_value = last_processed_block_number
+            end_value = last_block_number
             from_block = (current_page - 1) * results_per_page + start_value
             to_block = current_page * results_per_page + start_value
 
@@ -110,7 +111,7 @@ class Events_Listener():
                 if to_block > last_block_number:
                     to_block = last_block_number
                     
-            return last_processed_block_number
+            return end_value + 1
         except Exception as e:
             raise e
         
@@ -133,8 +134,10 @@ class Events_Listener():
         @Dev: We keep checking for new blocks until the last_block_number is less than last_processed_block_number.
         """
         logging.log(25, "waiting for not explored blocks...")
+        #print("enter", last_block_number, last_processed_block_number)
         while last_block_number < last_processed_block_number:
             last_block_number = self.get_last_block_number()
+            #print(last_block_number, last_processed_block_number)
         logging.log(25, "new blocks found, will explore now from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
 
     def get_last_processed_block_number(self, last_processed_block_number):

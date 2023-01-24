@@ -6,7 +6,7 @@ A Python program has been implemented in order to index the Transfer events and 
 There are two way to search for Transfer events on this contract using this program, one is to define two blocks number range to search in,
 the other one is to permanently search for new Transfer events on the last mined block.
 
-You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/documentation.txt)) but you will the same information than here.
+You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/documentation.txt) but you will the same information than here.
 
 # Getting Started
 

@@ -118,6 +118,7 @@ pytest
 
 - We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
     - In order to make scalable to 100 million entries there is two options:
+    
         1- Horizontally scaling the database: You can add more RDS instances to handle the increased load, and use a load balancer to distribute the incoming data across the instances.
         2- Optimizing the database: You can optimize the database's performance by indexing the relevant columns and fine-tuning the configuration settings.
 

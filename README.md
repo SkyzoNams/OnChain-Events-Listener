@@ -97,7 +97,7 @@ This class contains built-in methods:
     get_top_100_holders: returns top 100 holders information with the pre-calculated weekly change percentage and the total supply percentage.
     You can add a limit to your request by passing an integer value as parameter and increase or reduce the holder classification, by default there is a 100 results limit.
 
-    decode_records: methods will create an array of dict with human digestible key name.
+    decode_records: methods will create an array of dict with human digestible key names.
 
 # Testing
 

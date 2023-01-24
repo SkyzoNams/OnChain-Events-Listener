@@ -10,7 +10,8 @@ from mock import MagicMock
 from decimal import Decimal
 from src.database_manager import DataBaseManager
 from hexbytes import HexBytes
-    
+import requests_mock
+
 @pytest.fixture
 def events_listener():
     return Events_Listener()
@@ -23,6 +24,7 @@ def test_init(events_listener):
     assert events_listener.max_threads == 8
     assert events_listener.infura_key == "178f1d53d56842baaf55e41ec9efec61"
     assert events_listener.total_supply == 16969696969
+    assert events_listener.endpoint == "https://api.etherscan.io/api"
 
 def test_get_topic_map(events_listener):
     with open('./files/abi.json') as json_file:
@@ -66,9 +68,10 @@ def test_fetch_events(events_listener, monkeypatch):
     thread.join()
     assert True # If the function runs without any errors, the test should pass
 
+        
 def test_fetch_events_in_blocks(events_listener):
-    last_processed_block_number = 0
-    last_block_number = 100
+    last_processed_block_number = 13140651
+    last_block_number = 13150651
     last_processed_block_number = events_listener.fetch_events_in_blocks(last_processed_block_number, last_block_number)
     assert last_processed_block_number == last_block_number
 

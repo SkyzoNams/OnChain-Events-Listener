@@ -29,6 +29,7 @@ class Events_Listener():
         self.db_manager = DataBaseManager()
         self.total_supply = self.get_total_supply()
         self.endpoint = "https://api.etherscan.io/api"
+        self.etherscan_api_key = "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
 
     def connect_to_provider(self):
         """
@@ -76,33 +77,51 @@ class Events_Listener():
 
     def fetch_events_in_blocks(self, last_processed_block_number: int, last_block_number: int):
         """
-        This function iterates over block numbers to fetch all the events for a specific ERC20 token transfer event between `last_processed_block_number` and `last_block_number`
-        @param last_processed_block_number: int : the last block number that was processed
-        @param last_block_number: int : the last block number on the blockchain
+        This function iterates over block numbers to fetch all the events for the token transfer event 
+        between `last_processed_block_number` and `last_block_number`
+        @param last_processed_block_number: the last block number that was processed
+        @param last_block_number: the last block number on the blockchain
         If last_block_number is None, the function will retrieve the last block number on the blockchain.
         Then, it makes a request to the Etherscan API to fetch all the events between the last processed block and the last block
-        The function then decode the response, and process each event using the `handle_event` method
+        The function then decode the response, and process each event using the handle_event method
         @return: int : the last processed block number
         """
         try:
             if last_block_number is None:
                 last_block_number = self.get_last_block_number()
-            params = {
-                "module": "logs",
-                "action": "getLogs",
-                "fromBlock": last_processed_block_number,
-                "toBlock": last_block_number,
-                "address": "0xBAac2B4491727D78D2b78815144570b9f2Fe8899", # ERC20 contract address
-                "topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", # Transfer event signature
-                "apikey": "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
-            }
-            # Make the API request
-            response = requests.get(self.endpoint, params=params)
-            for event in response.json()["result"]:
-                self.handle_event(event)
-            return last_block_number
+
+            # Initialize variables for pagination
+            results_per_page = 1000
+            current_page = 1
+            start = last_processed_block_number
+            from_block = (current_page - 1) * results_per_page + start
+            to_block = current_page * results_per_page + start
+
+            while last_processed_block_number <= last_block_number:
+                params = {
+                    "module": "logs",
+                    "action": "getLogs",
+                    "fromBlock": from_block,
+                    "toBlock": to_block,
+                    "address": "0xBAac2B4491727D78D2b78815144570b9f2Fe8899",
+                    "topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",  # Transfer event signature
+                    "apikey": "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
+                }
+                response = requests.get(self.endpoint, params=params)
+
+                data = response.json()
+                for event in data["result"]:
+                    self.handle_event(event)
+                current_page += 1
+                last_processed_block_number = to_block + 1
+                from_block = to_block + 1
+                to_block = to_block + results_per_page + 1
+                if to_block > last_block_number:
+                    to_block = last_block_number
+            return last_processed_block_number
         except Exception as e:
             raise e
+
 
     def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):
         """
@@ -181,6 +200,8 @@ class Events_Listener():
         @Dev: This function uses the get_balance function to get the balance of the address and uses
         calculate_weekly_change function to get the weekly changes percentage value
         """
+        if address == "0000000000000000000000000000000000000000":
+            return None
         balance = self.get_balance(address, block_number)
         weekly_change = self.calculate_weekly_change(address, balance, timestamp)
         self.db_manager.execute(query="""INSERT INTO user_balance (balance, address, transaction_hash, transaction_date, total_supply_pct, weekly_change_pct)

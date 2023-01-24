@@ -6,7 +6,7 @@ A Python program has been implemented in order to index the Transfer events and 
 There are two way to search for Transfer events on this contract using this program, one is to define two blocks number range to search in,
 the other one is to permanently search for new Transfer events on the last mined block.
 
-You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/documentation.txt) but you will the same information than here.
+You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/documentation.txt) but you will the same information than here.
 
 For this exercise, two version have been made. One basic and a second one optimized (Practical-Optimized).
 
@@ -125,7 +125,7 @@ pytest
 - We are using a free Infura provider plan that have requesting limits. Increasing the daily limit will be necessary on production. 
     - A different implementation could reduce the number of Infura api call.
 
-- For the optimized version, we are using a free etherscan api plan that have requesting limits (5 per seconds). Increasing the daily limit could be necessary on production. 
+- For the optimized version, we are using a free etherscan api plan that have requesting limits, 5 per seconds or 100,000 call per day. Increasing the daily limit could be necessary on production. 
 
 - We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
     - In order to make scalable to 100 million entries there is two options:
@@ -137,7 +137,7 @@ However, the program always handles new mined blocks one after the other.
 
 - Going deeper on tests.
 - Adding engineering methods.
-- Find a way to kill the thread as soon as he finished its last task.
+- Find a way to kill the thread as soon as he finished its last task for the version 1.
 
 # Performance
 
@@ -150,3 +150,4 @@ However, the program always handles new mined blocks one after the other.
 
 2. version 2 optimized
 The optimized version, using the etherscan api is way more faster and has less iterations.
+It tooks 1995 seconds so approximately 33.3 minutes on my local machine to process 10 000 blocks (from block 13140651 to block 13150651) but it will vary depending on the number of Transfer events in this block range.

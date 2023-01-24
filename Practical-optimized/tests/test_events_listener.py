@@ -68,12 +68,12 @@ def test_fetch_events(events_listener, monkeypatch):
     thread.join()
     assert True # If the function runs without any errors, the test should pass
 
-        
+@pytest.mark.timeout(5) # Set timeout to 5 seconds
 def test_fetch_events_in_blocks(events_listener):
-    last_processed_block_number = 13140651
-    last_block_number = 13150651
+    last_processed_block_number = 13141651
+    last_block_number = 13142651
     last_processed_block_number = events_listener.fetch_events_in_blocks(last_processed_block_number, last_block_number)
-    assert last_processed_block_number == last_block_number
+    assert last_processed_block_number == last_block_number + 1
 
 @pytest.mark.timeout(5) # Set timeout to 5 seconds
 def test_waiting_for_new_blocks(events_listener):

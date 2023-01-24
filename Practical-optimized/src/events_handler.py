@@ -118,6 +118,7 @@ class Events_Listener():
                 to_block = to_block + results_per_page + 1
                 if to_block > last_block_number:
                     to_block = last_block_number
+                    
             return last_processed_block_number
         except Exception as e:
             raise e

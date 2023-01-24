@@ -113,7 +113,16 @@ class Events_Listener():
         except Exception as e:
             raise e
         
-
+    def get_api_params(self, from_block, to_block):
+        return {
+                "module": "logs",
+                "action": "getLogs",
+                "fromBlock": from_block,
+                "toBlock": to_block,
+                "address": self.contract_address,
+                "topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",  # Transfer event signature
+                "apikey": self.etherscan_api_key
+            }
 
 
     def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):

@@ -27,7 +27,7 @@ class Events_Listener():
         self.infura_key = "178f1d53d56842baaf55e41ec9efec61"
         self.db_manager = DataBaseManager()
         self.total_supply = self.get_total_supply()
-        
+
     def connect_to_provider(self):
         """
         @Notice: This function is used to connect the contract to the web3 provider
@@ -243,8 +243,14 @@ class Events_Listener():
         new_timestamp = timestamp - timedelta(days=7)
         records = self.db_manager.select_all(query="""SELECT balance FROM user_balance
             WHERE address = '""" + address + """' AND transaction_date <= '""" + str(new_timestamp) + """' ORDER BY transaction_date DESC LIMIT 1;""")
-        if len(records) == 0 or len(records[0]) == 0 or records[0][0] == None or records[0][0] == 0.0:
+
+        if len(records) == 0 or len(records[0]) == 0 or records[0][0] == None:
             return None
+        elif float(balance) == 0.0 and records[0][0] == 0.0:
+            return 0.0
+        elif records[0][0] == 0.0:
+            return None
+        
         change_cp_to_last_week = ((float(balance) - records[0][0]) / records[0][0]) * 100
         return change_cp_to_last_week
       

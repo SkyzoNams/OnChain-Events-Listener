@@ -23,7 +23,7 @@ class Engineering():
             as last_transaction ORDER BY balance DESC LIMIT """
         query += str(limit)
         return DataBaseManager().select_all(query=query)
-
+        
 def decode_records(records):
     """
     create an array of dict with human digestible key names
@@ -42,7 +42,6 @@ def decode_records(records):
                 "weekly_change_pct": record[7]
             })
     return result
-
     
 if __name__ == "__main__":
     print(decode_records(Engineering().get_holders(10)))

@@ -126,3 +126,24 @@ def test_calculate_total_supply_pct(events_listener):
     assert events_listener.calculate_total_supply_pct(events_listener.total_supply) == 100.0
     assert events_listener.calculate_total_supply_pct(events_listener.total_supply / 2) == 50.0
     assert float(events_listener.calculate_total_supply_pct(events_listener.total_supply / 3)) == 33.333333333333336
+
+def test_calculate_weekly_change(events_listener):
+    events_listener.db_manager = MagicMock()
+
+    # insert mock data into the database
+    events_listener.db_manager.select_all.return_value = [(1,)]
+
+    result = events_listener.calculate_weekly_change("0x30741289523c2e4d2a62c7d6722686d14e723851", 14, datetime.datetime(2023, 1, 24, 0, 18, 11))
+    assert result == 1300.0
+    
+    events_listener.db_manager.select_all.return_value = [(0.0,)]
+    result = events_listener.calculate_weekly_change("0x30741289523c2e4d2a62c7d6722686d14e723851", 0, datetime.datetime(2023, 1, 24, 0, 18, 11))
+    assert result == 0.0
+    
+    events_listener.db_manager.select_all.return_value = [(0,)]
+    result = events_listener.calculate_weekly_change("0x30741289523c2e4d2a62c7d6722686d14e723851", 1, datetime.datetime(2023, 1, 24, 0, 18, 11))
+    assert result == None
+    
+    events_listener.db_manager.select_all.return_value = [(1,)]
+    result = events_listener.calculate_weekly_change("0x30741289523c2e4d2a62c7d6722686d14e723851", 4, datetime.datetime(2023, 1, 24, 0, 18, 11))
+    assert result == 300

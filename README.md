@@ -103,7 +103,7 @@ This class contains built-in methods:
 
 A complete testing suits have been implemented on the /tests/test_events_listener.py ([here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/tests/test_events_listener.py)) file using pytest.
 
-You can run all the tests by executing "pytest" on the root of the Practical folder.
+You can run all the tests by executing "pytest" on the root of the Practical folder. Please make sure the venv as been activated first.
 ```bash
 pytest
 ```

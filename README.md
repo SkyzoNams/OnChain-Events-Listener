@@ -12,8 +12,17 @@ the other one is to permanently search for new Transfer events on the last mined
 2.  Make sure to have Python 3 installed on your machine (developed with Python 3.7.8)
 3.  Go inside the Practical folder from the project root
 4.  Create your local venv by doing "python3 -m venv ./venv"
+```bash
+python3 -m venv ./venv
+```
 5.  Activate the venv by doing "source venv/bin/activate"
+```bash
+source venv/bin/activate
+```
 6.	From the project root install all the dependencies by doing "pip install -r requirements.txt"
+```bash
+pip install -r requirements.txt
+```
 
 # Usage
 

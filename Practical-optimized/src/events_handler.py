@@ -78,7 +78,8 @@ class Events_Listener():
     def fetch_events_in_blocks(self, last_processed_block_number: int, last_block_number: int):
         """
         This function iterates over block numbers to fetch all the events for the token transfer event 
-        between `last_processed_block_number` and `last_block_number`
+        between `last_processed_block_number` and `last_block_number`. It handles the 1000 results limit from the 
+        etherscan api by incrementing the from_block and to_block values regarding this limit.
         @param last_processed_block_number: the last block number that was processed
         @param last_block_number: the last block number on the blockchain
         If last_block_number is None, the function will retrieve the last block number on the blockchain.
@@ -123,7 +124,6 @@ class Events_Listener():
                 "topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",  # Transfer event signature
                 "apikey": self.etherscan_api_key
             }
-
 
     def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):
         """

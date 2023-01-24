@@ -54,7 +54,7 @@ You can deactivate the venv by doing:
 deactivate
 ```
 
-# How it works (version 1)
+# How it works [version 1 - basic](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical)
 
 The Python program will connect to the Infura provider using the Python web3 library in order to get the Ethereum mainnet information, will iterate over blocks regarding two methods 
 (from a defined a block number to another block number or continuously to the latest block), then it will create a thread for each block exploration.
@@ -70,7 +70,7 @@ We request for each user (sender and receiver) their balance in order to store t
 
 Also, we pre-calculate the share of the total supply owns by the user in percentage and the percentage of changes since 7 days ago.
 
-# How it works (version 2 optimized)
+# How it works [version 2 - optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized)
 
 This program will iterates over block numbers to fetch all the events for the token transfer event between `last_processed_block_number` and `last_block_number` using the etherscan api.
 

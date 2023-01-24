@@ -45,6 +45,12 @@ python blocks_listener.py
 
 The program can not be executed with only an -to parameter without a -from
 
+You can deactivate the venv by doing
+```bash
+deactivate
+```
+
+
 # How it works
 
 The Python program will connect to the Infura provider using the Python web3 library in order to get the Ethereum mainnet information, will iterate over blocks regarding two methods 

@@ -10,13 +10,6 @@ from mock import MagicMock
 from decimal import Decimal
 from src.database_manager import DataBaseManager
 from hexbytes import HexBytes
-
-def get_dict_file(file_path):
-    """
-    Helper function to return the contents of a file as a dictionary
-    """
-    with open(file_path, "r") as f:
-        return json.loads(f.read())
     
 @pytest.fixture
 def events_listener():
@@ -24,14 +17,13 @@ def events_listener():
 
 def test_init(events_listener):
     assert events_listener.contract_address == "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
-    assert events_listener.web3 is None
     assert isinstance(events_listener.db_manager, DataBaseManager)
     assert events_listener.contract_address == "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
-    assert events_listener.web3 is None
     assert events_listener.threads == []
     assert events_listener.max_threads == 8
     assert events_listener.infura_key == "178f1d53d56842baaf55e41ec9efec61"
-    
+    assert events_listener.total_supply == 16969696969
+
 def test_get_topic_map(events_listener):
     with open('./files/abi.json') as json_file:
         expected_topic_map = eth_event.get_topic_map(json.load(json_file))
@@ -88,8 +80,8 @@ def test_waiting_for_new_blocks(events_listener):
 
 def test_get_total_supply(events_listener):
     total_supply = events_listener.get_total_supply()
-    assert isinstance(total_supply, int)
-    assert total_supply == 16969696969000000000000000000
+    assert isinstance(total_supply, Decimal)
+    assert total_supply == 16969696969
 
 def test_insert_event(events_listener):
     mock_db = MagicMock()
@@ -112,7 +104,7 @@ def test_insert_user_balance(events_listener):
     mock_db = MagicMock()
     events_listener.db_manager = mock_db
     events_listener.insert_user_balance("0x30741289523c2e4d2a62c7d6722686d14e723851", "0xfc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208", datetime.datetime.fromtimestamp(1674488815.6867409), 16455322)
-    mock_db.execute.assert_called_once_with(query="""INSERT INTO user_balance (balance, address, transaction_hash, transaction_date)\n            SELECT %s, %s, %s, %s\n            WHERE NOT EXISTS (\n                SELECT 1 FROM user_balance\n                WHERE address = %s AND transaction_hash = %s);""", item_tuple=(Decimal('0.204336921515862835'), '0x30741289523c2e4d2a62c7d6722686d14e723851', '0xfc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208', datetime.datetime(2023, 1, 23, 16, 46, 55, 686741), '0x30741289523c2e4d2a62c7d6722686d14e723851', '0xfc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208'))
+    mock_db.execute.assert_called_once_with(query='INSERT INTO user_balance (balance, address, transaction_hash, transaction_date, total_supply_pct, weekly_change_pct)\n            SELECT %s, %s, %s, %s, %s, %s\n            WHERE NOT EXISTS (\n                SELECT 1 FROM user_balance\n                WHERE address = %s AND transaction_hash = %s);', item_tuple=(Decimal('0.204336921515862835'), '0x30741289523c2e4d2a62c7d6722686d14e723851', '0xfc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208', datetime.datetime(2023, 1, 23, 16, 46, 55, 686741), Decimal('1.204128287553646975203096215E-9'), None, '0x30741289523c2e4d2a62c7d6722686d14e723851', '0xfc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208'))
     
 def test_decode_block_transactions_hash(events_listener):
     events_listener.decode_block_transactions_hash({'transactions': [HexBytes(bytes.fromhex("fc0ad0aa9683b397c1c4da5c11276c630ef7188c9b111086af1298c066305208"))]}, 16455322)
@@ -128,3 +120,9 @@ def test_is_one_of_us(events_listener):
 def test_explore_block(events_listener):
     events_listener.explore_block(16455322)
     assert True # If the function runs without any errors, the test should pass
+    
+def test_calculate_total_supply_pct(events_listener):
+    assert events_listener.calculate_total_supply_pct(0) == 0
+    assert events_listener.calculate_total_supply_pct(events_listener.total_supply) == 100.0
+    assert events_listener.calculate_total_supply_pct(events_listener.total_supply / 2) == 50.0
+    assert float(events_listener.calculate_total_supply_pct(events_listener.total_supply / 3)) == 33.333333333333336

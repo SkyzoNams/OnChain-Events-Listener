@@ -44,6 +44,8 @@ and store the information in our database.
 
 We request for each user (sender and receiver) their balance in order to store the information. For each record we want to store, we make sure first it has not been stored earlier.
 
+Also, we pre-calculate the share of the total supply owns by the user in percentage and the percentage of changes since 7 days ago.
+
 # Database
 
 To store the information we want, we are using a free AWS RDS database running a PostgresSQL instance.
@@ -64,7 +66,14 @@ We use the python psycopg2 library to access the database.
 
 In order to let the data consumed by the engineering team, we have created the Engineering class [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/engineering.py)).
 
-This class contains built-in methods that return token holder's balance, top 100 token holders including what % of the total supply their balance represent, token holder's weekly balance change (in %).
+This class contains built-in methods:
+    get_holders: returns token holder's information with the pre-calculated weekly change percentage and the total supply percentage.
+    You can add a limit to your request by passing an integer value as parameter, by default there is no limit for this result.
+    
+    get_top_100_holders: returns top 100 holders information with the pre-calculated weekly change percentage and the total supply percentage.
+    You can add a limit to your request by passing an integer value as parameter and increase or reduce the holder classification, by default there is a 100 results limit.
+
+    decode_records: methods will create an array of dict with human digestible key name.
 
 # Testing
 
@@ -94,6 +103,8 @@ It exists a way to filter the events from a block but the method doesn't work.
 Going deeper on tests.
 
 Adding engineering methods.
+
+Find a way to kill the thread as soon as he finished its last task.
 
 # Performance
 

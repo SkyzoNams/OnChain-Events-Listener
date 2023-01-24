@@ -22,12 +22,17 @@ You can run the program by executing these commands:
 This example will search for Transfer events from the block 13140651 to the latest:
 ```bash
 python blocks_listener.py -from 13140651
+```
 
 This example will search for Transfer events from the block 13140651 to the block 13140751:
-    <p><em>python blocks_listener.py -from 13140651 -to 13140751</em></p>
+```bash
+python blocks_listener.py -from 13140651 -to 13140751
+```
 
 This example will search for Transfer events from the last mined block and continue to the next mined block:
-    <p><em>python blocks_listener.py</em></p>
+```bash
+python blocks_listener.py
+```
 
 The program can not be executed with only an -to parameter without a -from
 

@@ -239,7 +239,7 @@ class Events_Listener():
         @param balance: the current balance of the user address.
         @param timestamp: the transaction timestamp.
         @return: the weekly change of the balance for the given address.
-    """
+        """
         new_timestamp = timestamp - timedelta(days=7)
         records = self.db_manager.select_all(query="""SELECT balance FROM user_balance
             WHERE address = '""" + address + """' AND transaction_date <= '""" + str(new_timestamp) + """' ORDER BY transaction_date DESC LIMIT 1;""")

@@ -93,25 +93,15 @@ class Events_Listener():
             # Initialize variables for pagination
             results_per_page = 1000
             current_page = 1
-            start = last_processed_block_number
-            from_block = (current_page - 1) * results_per_page + start
-            to_block = current_page * results_per_page + start
+            start_value = last_processed_block_number
+            from_block = (current_page - 1) * results_per_page + start_value
+            to_block = current_page * results_per_page + start_value
 
             while last_processed_block_number <= last_block_number:
-                params = {
-                    "module": "logs",
-                    "action": "getLogs",
-                    "fromBlock": from_block,
-                    "toBlock": to_block,
-                    "address": "0xBAac2B4491727D78D2b78815144570b9f2Fe8899",
-                    "topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",  # Transfer event signature
-                    "apikey": "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
-                }
-                response = requests.get(self.endpoint, params=params)
-
-                data = response.json()
-                for event in data["result"]:
+                response = requests.get(self.endpoint, params=self.get_api_params(from_block, to_block))
+                for event in response.json()["result"]:
                     self.handle_event(event)
+                    
                 current_page += 1
                 last_processed_block_number = to_block + 1
                 from_block = to_block + 1
@@ -122,6 +112,8 @@ class Events_Listener():
             return last_processed_block_number
         except Exception as e:
             raise e
+        
+
 
 
     def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):

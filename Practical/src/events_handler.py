@@ -272,7 +272,7 @@ class Events_Listener():
         """
         @Notice: This function returns the total supply of the token contract
         @Dev: This function uses the web3.eth.contract function to get the contract object
-        @return: total supply of the token in wei unit
+        @return: total supply of the token in wei unit.
         """
         contract = self.provider().eth.contract(address=self.contract_address, abi=self.contract_abi)
         # The function that returns the total supply

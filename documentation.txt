@@ -150,4 +150,5 @@ The process execution could be distributed simultaneously to different machine, 
 However, the program always handles new mined blocks one after the other.
 
 The optimized version, using the etherscan api is way more faster and has less iterations.
-It tooks # seconds on my local machine to process 10 000 blocks (from block 13140651 to block 13150651) but it will vary depending on the number of Transfer events in this block range.
+It tooks # seconds on my local machine to process 10 000 blocks (from block 13140651 to block 13150651)
+but it will vary depending on the number of Transfer events in this block range.

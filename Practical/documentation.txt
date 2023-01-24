@@ -77,29 +77,26 @@ You can run all the tests by executing "pytest" on the root of the Practical fol
 
 # Improvements
 
-+ Reducing the database accessibility and encrypt the stored data.
-+ Store the database credentials in a key vault.
+- Reducing the database accessibility and encrypt the stored data.
+- Store the database credentials in a key vault.
 
-+ We are using a free Infura provider plan that have requesting limits. Increasing the daily limit will be necessary on production. 
-A different implementation could reduce the number of Infura api call.
+- We are using a free Infura provider plan that have requesting limits. Increasing the daily limit will be necessary on production. 
+    -A different implementation could reduce the number of Infura api call.
 
-+ We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
-In order to make scalable to 100 million entries there is two options:
+- We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
+    -In order to make scalable to 100 million entries there is two options:
+        1- Horizontally scaling the database: You can add more RDS instances to handle the increased load, and use a load balancer to distribute the incoming data across the instances.
+        2- Optimizing the database: You can optimize the database's performance by indexing the relevant columns and fine-tuning the configuration settings.
 
-1- Horizontally scaling the database: You can add more RDS instances to handle the increased load, and use a load balancer to distribute the incoming data across the instances.
-2- Optimizing the database: You can optimize the database's performance by indexing the relevant columns and fine-tuning the configuration settings.
-
-+ This program has been made with Python. Python is not known to be the fastest programming language and some block processing can take too long if you want to process a large block range.
+- This program has been made with Python. Python is not known to be the fastest programming language and some block processing can take too long if you want to process a large block range.
 However, the program always handles new mined blocks one after the other.
 
-+ Also, this program is iterating over blocks, then over transaction receipt and then over receipt events. That's a lot of iterations that could be interesting to reduced.
-It exists a way to filter the events from a block but the method doesn't work.
+- Also, this program is iterating over blocks, then over transaction receipt and then over receipt events. That's a lot of iterations that could be interesting to reduced.
+    - It exists a way to filter the events from a block but the method doesn't work.
 
-+ Going deeper on tests.
-
-+ Adding engineering methods.
-
-+ Find a way to kill the thread as soon as he finished its last task.
+- Going deeper on tests.
+- Adding engineering methods.
+- Find a way to kill the thread as soon as he finished its last task.
 
 # Performance
 

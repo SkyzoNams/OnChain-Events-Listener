@@ -45,7 +45,6 @@ python blocks_listener.py
 
 The program can not be executed with only an -to parameter without a -from
 
-
 You can deactivate the venv by doing:
 ```bash
 deactivate

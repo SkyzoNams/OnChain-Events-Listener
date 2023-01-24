@@ -6,6 +6,8 @@ A Python program has been implemented in order to index the Transfer events and 
 There are two way to search for Transfer events on this contract using this program, one is to define two blocks number range to search in,
 the other one is to permanently search for new Transfer events on the last mined block.
 
+You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/documentation.txt)) but you will the same information than here.
+
 # Getting Started
 
 1.	Clone the repo
@@ -134,6 +136,8 @@ Find a way to kill the thread as soon as he finished its last task.
 
 # Performance
 
-On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block 13140651)
+On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block #13140651)
 
 The process execution could be distributed simultaneously to different machine, each one processing a batch of blocks in order to save some precious time.
+
+However it works well and can process blocks after blocks if you run the program without parameters (from the latest block).

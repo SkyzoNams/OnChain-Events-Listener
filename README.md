@@ -10,7 +10,7 @@ the other one is to permanently search for new Transfer events on the last mined
 
 1.	Clone the repo
 2.  Make sure to have Python 3 installed on your machine (developed with Python 3.7.8)
-3.  Go inside the Practical folder from the project root
+3.  Go inside the Practical folder from the project root (/Data-Engineer-Coding-Challenge/Practical)
 4.  Create your local venv
 ```bash
 python3 -m venv ./venv

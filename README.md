@@ -73,6 +73,7 @@ Also, we pre-calculate the share of the total supply owns by the user in percent
 # How it works [version 2 - optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized)
 
 This program will iterates over block numbers to fetch all the events for the token transfer event between `last_processed_block_number` and `last_block_number` using the etherscan api.
+Fetching directly the Transfer event using the etherscan api is way more faster than iterate over blocks, transactions and events.
 
 It will handle the 1000 results limit from the etherscan api by incrementing the from_block and to_block values regarding this limit. If the block numbers range is higher than 1000, it will divide the requests regarding the limit.
 

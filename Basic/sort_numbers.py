@@ -78,13 +78,13 @@ def sort_numbers_using_insertion(nums):
 import time
 
 n = time.time()
-print("1 - Sorted list: ", sort_numbers_with_builtin_sorted([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
+print("1 - Sorted list with sorted method: ", sort_numbers_with_builtin_sorted([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
 
 n = time.time()
-print("2 - Sorted list: ", sort_numbers_with_builtin_sort([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
+print("2 - Sorted list with sort method: ", sort_numbers_with_builtin_sort([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
 
 n = time.time()
-print("3 - Sorted list: ", sort_numbers_using_bubble_sort([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
+print("3 - Sorted list with bubble sort: ", sort_numbers_using_bubble_sort([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
 
 n = time.time()
-print("4 - Sorted list: ", sort_numbers_using_insertion([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")
+print("4 - Sorted list with insertion: ", sort_numbers_using_insertion([99, 1, 0, 22, 42, 80, 66, 2, 5, 55]), "-  " + str(round(time.time() - n, 5)) + " seconds to be executed")

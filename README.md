@@ -67,6 +67,7 @@ We use the python psycopg2 library to access the database.
 In order to let the data consumed by the engineering team, we have created the Engineering class [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical/engineering.py)).
 
 This class contains built-in methods:
+
     get_holders: returns token holder's information with the pre-calculated weekly change percentage and the total supply percentage.
     You can add a limit to your request by passing an integer value as parameter, by default there is no limit for this result.
     

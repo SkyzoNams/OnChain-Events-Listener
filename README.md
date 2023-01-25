@@ -8,7 +8,7 @@ the other one is to permanently search for new Transfer events on the last mined
 
 You can find the documentation for the Practical test [here](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/documentation.txt) but you will the same information than here.
 
-<h4><p>For this exercise, two version have been made. One [basic](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical) and a second one [optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized).</p></h4>
+<h4><p>For this exercise, two version have been made.</p></h4> <p>One [basic](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical) and a second one [optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized).</p>
 
 # Getting Started
 

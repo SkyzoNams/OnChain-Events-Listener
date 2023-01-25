@@ -142,12 +142,15 @@ However, the program always handles new mined blocks one after the other.
 
 # Performance
 
-1. version 1
+- version 1 basic:
+
 On my local machine with 10 CPU cores and 16 GPU cores it would take 11091 hours so 462 days, so almost 1 year and 2 months if you want the program to start processing all the blocks since the contract creation (block #13140651)
 
 The process execution could be distributed simultaneously to different machine, each one processing a batch of blocks in order to save some precious time.
 
 However, the program always handles new mined blocks one after the other.
+
+- version 2 optimized:
 
 The optimized version, using the etherscan api is way more faster and has less iterations.
 It tooks # seconds on my local machine to process 10 000 blocks (from block 13140651 to block 13150651)

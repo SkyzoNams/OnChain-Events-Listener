@@ -98,7 +98,8 @@ class Events_Listener():
             end_value = last_block_number
             from_block = (current_page - 1) * results_per_page + start_value
             to_block = current_page * results_per_page + start_value
-
+            if to_block > end_value:
+                to_block = end_value
             while current_block_number <= last_block_number:
                 response = requests.get(self.endpoint, params=self.get_api_params(from_block, to_block))
                 for event in response.json()["result"]:

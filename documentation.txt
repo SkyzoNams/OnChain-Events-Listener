@@ -106,7 +106,7 @@ You can run all the tests by executing "pytest" on the root of the Practical fol
 - We are using a free Infura provider plan that have requesting limits. Increasing the daily limit will be necessary on production. 
     - A different implementation could reduce the number of Infura api call.
 
-- For the optimized version, we are using a free etherscan api plan that have requesting limits (5 per seconds). Increasing the daily limit could be necessary on production. 
+- For the optimized version, we are using a free etherscan api plan that have requesting limits, 5 per seconds or 100,000 call per day. Increasing the daily limit could be necessary on production. 
 
 - We are also using a free db.t3.micro AWS RDS database, on production a database with more storage and better capacities will be necessary.
     - In order to make scalable to 100 million entries there is two options:

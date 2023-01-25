@@ -41,12 +41,12 @@ def test_provider(events_listener):
     assert web3.isConnected() == True
     assert web3 is not None
 
-def test_get_last_processed_block_number(events_listener):
-    last_processed_block_number, last_block_number = events_listener.get_last_processed_block_number(None)
-    assert last_processed_block_number == last_block_number
-    last_processed_block_number, last_block_number = events_listener.get_last_processed_block_number(100000)
-    assert last_processed_block_number != events_listener
-    assert isinstance(last_processed_block_number, int)
+def test_get_current_block_number(events_listener):
+    current_block_number, last_block_number = events_listener.get_current_block_number(None)
+    assert current_block_number == last_block_number
+    current_block_number, last_block_number = events_listener.get_current_block_number(100000)
+    assert current_block_number != events_listener
+    assert isinstance(current_block_number, int)
     assert isinstance(last_block_number, int)
 
 def test_get_last_block_number(events_listener):
@@ -67,10 +67,10 @@ def test_fetch_events(events_listener, monkeypatch):
     assert True # If the function runs without any errors, the test should pass
 
 def test_fetch_events_in_blocks(events_listener):
-    last_processed_block_number = 0
+    current_block_number = 0
     last_block_number = 100
-    last_processed_block_number = events_listener.fetch_events_in_blocks(last_processed_block_number, last_block_number)
-    assert last_processed_block_number == last_block_number + 1
+    current_block_number = events_listener.fetch_events_in_blocks(current_block_number, last_block_number)
+    assert current_block_number == last_block_number + 1
 
 @pytest.mark.timeout(5) # Set timeout to 5 seconds
 def test_waiting_for_new_blocks(events_listener):

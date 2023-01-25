@@ -43,12 +43,12 @@ def test_provider(events_listener):
     assert web3.isConnected() == True
     assert web3 is not None
 
-def test_get_last_processed_block_number(events_listener):
-    last_processed_block_number, last_block_number = events_listener.get_last_processed_block_number(None)
-    assert last_processed_block_number == last_block_number
-    last_processed_block_number, last_block_number = events_listener.get_last_processed_block_number(100000)
-    assert last_processed_block_number != events_listener
-    assert isinstance(last_processed_block_number, int)
+def test_get_current_block_number(events_listener):
+    current_block_number, last_block_number = events_listener.get_current_block_number(None)
+    assert current_block_number == last_block_number
+    current_block_number, last_block_number = events_listener.get_current_block_number(100000)
+    assert current_block_number != events_listener
+    assert isinstance(current_block_number, int)
     assert isinstance(last_block_number, int)
 
 def test_get_last_block_number(events_listener):
@@ -70,10 +70,10 @@ def test_fetch_events(events_listener, monkeypatch):
 
 @pytest.mark.timeout(5) # Set timeout to 5 seconds
 def test_fetch_events_in_blocks(events_listener):
-    last_processed_block_number = 13141651
+    current_block_number = 13141651
     last_block_number = 13142651
-    last_processed_block_number = events_listener.fetch_events_in_blocks(last_processed_block_number, last_block_number)
-    assert last_processed_block_number == last_block_number + 1
+    current_block_number = events_listener.fetch_events_in_blocks(current_block_number, last_block_number)
+    assert current_block_number == last_block_number + 1
 
 @pytest.mark.timeout(5) # Set timeout to 5 seconds
 def test_waiting_for_new_blocks(events_listener):
@@ -135,3 +135,14 @@ def test_calculate_weekly_change(events_listener):
     events_listener.db_manager.select_all.return_value = [(1,)]
     result = events_listener.calculate_weekly_change("0x30741289523c2e4d2a62c7d6722686d14e723851", 4, datetime.datetime(2023, 1, 24, 0, 18, 11))
     assert result == 300
+    
+def test_get_api_params(events_listener):
+    params = events_listener.get_api_params(10, 1000)
+    assert isinstance(params, dict)
+    assert params["module"] == "logs"
+    assert params["action"] == "getLogs"
+    assert params["fromBlock"] == 10
+    assert params["toBlock"] == 1000
+    assert params["address"] == events_listener.contract_address
+    assert params["topic0"] == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+    assert params["apikey"] == events_listener.etherscan_api_key

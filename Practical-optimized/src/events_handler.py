@@ -66,21 +66,21 @@ class Events_Listener():
         We call the fetch_events_in_blocks method to explore the blocks.
         """
         try:
-            last_processed_block_number = None
+            current_block_number = None
             while 42:
-                last_processed_block_number, last_block_number = self.get_last_processed_block_number(last_processed_block_number)
-                logging.log(25, "from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
-                last_processed_block_number = self.fetch_events_in_blocks(last_processed_block_number, last_block_number)
-                self.waiting_for_new_blocks( last_processed_block_number, last_block_number)
+                current_block_number, last_block_number = self.get_current_block_number(current_block_number)
+                logging.log(25, "from #" + str(current_block_number) + " to #" + str(last_block_number))
+                current_block_number = self.fetch_events_in_blocks(current_block_number, last_block_number)
+                self.waiting_for_new_blocks( current_block_number, last_block_number)
         except Exception as e:
             raise e
 
-    def fetch_events_in_blocks(self, last_processed_block_number: int, last_block_number: int):
+    def fetch_events_in_blocks(self, current_block_number: int, last_block_number: int):
         """
         This function iterates over block numbers to fetch all the events for the token transfer event 
-        between `last_processed_block_number` and `last_block_number`. It handles the 1000 results limit from the 
+        between `current_block_number` and `last_block_number`. It handles the 1000 results limit from the 
         etherscan api by incrementing the from_block and to_block values regarding this limit.
-        @param last_processed_block_number: the last block number that was processed
+        @param current_block_number: the last block number that was processed
         @param last_block_number: the last block number on the blockchain
         If last_block_number is None, the function will retrieve the last block number on the blockchain.
         Then, it makes a request to the Etherscan API to fetch all the events between the last processed block and the last block
@@ -94,18 +94,18 @@ class Events_Listener():
             # Initialize variables for pagination
             results_per_page = 1000
             current_page = 1
-            start_value = last_processed_block_number
+            start_value = current_block_number
             end_value = last_block_number
             from_block = (current_page - 1) * results_per_page + start_value
             to_block = current_page * results_per_page + start_value
 
-            while last_processed_block_number <= last_block_number:
+            while current_block_number <= last_block_number:
                 response = requests.get(self.endpoint, params=self.get_api_params(from_block, to_block))
                 for event in response.json()["result"]:
                     self.handle_event(event)
                     
                 current_page += 1
-                last_processed_block_number = to_block + 1
+                current_block_number = to_block + 1
                 from_block = to_block + 1
                 to_block = to_block + results_per_page + 1
                 if to_block > last_block_number:
@@ -116,6 +116,12 @@ class Events_Listener():
             raise e
         
     def get_api_params(self, from_block, to_block):
+        """
+        @Notice: This function returns the parameters required to query the Etherscan API for logs
+        @param from_block: The block number to start querying from.
+        @param to_block: The block number to stop querying at.
+        @return: A dictionary object containing the parameters required for the API call.
+        """
         return {
                 "module": "logs",
                 "action": "getLogs",
@@ -126,31 +132,29 @@ class Events_Listener():
                 "apikey": self.etherscan_api_key
             }
 
-    def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):
+    def waiting_for_new_blocks(self, current_block_number, last_block_number):
         """
         @Notice: This function is used to wait for new blocks to be mined and return the latest block number
-        @param: last_processed_block_number: the last block number that was processed
+        @param: current_block_number: the last block number that was processed
         @param: last_block_number: the last block number available
-        @Dev: We keep checking for new blocks until the last_block_number is less than last_processed_block_number.
+        @Dev: We keep checking for new blocks until the last_block_number is less than current_block_number.
         """
         logging.log(25, "waiting for not explored blocks...")
-        #print("enter", last_block_number, last_processed_block_number)
-        while last_block_number < last_processed_block_number:
+        while last_block_number < current_block_number:
             last_block_number = self.get_last_block_number()
-            #print(last_block_number, last_processed_block_number)
-        logging.log(25, "new blocks found, will explore now from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
+        logging.log(25, "new blocks found, will explore now from #" + str(current_block_number) + " to #" + str(last_block_number))
 
-    def get_last_processed_block_number(self, last_processed_block_number):
+    def get_current_block_number(self, current_block_number):
         """
         @Notice: This function will return the last processed block number from the recorded block file
-        @param: last_processed_block_number: the last processed block number
+        @param: current_block_number: the last processed block number
         @return: The last processed block number and the current block number
         """
         try:
             last_block_number = self.get_last_block_number()
-            if last_processed_block_number is None:
-                last_processed_block_number = last_block_number
-            return last_processed_block_number, last_block_number
+            if current_block_number is None:
+                current_block_number = last_block_number
+            return current_block_number, last_block_number
         except Exception as e:
             raise e
 

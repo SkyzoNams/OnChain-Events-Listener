@@ -63,19 +63,19 @@ class Events_Listener():
         We call the fetch_events_in_blocks method to explore the blocks.
         """
         try:
-            last_processed_block_number = None
+            current_block_number = None
             while 42:
-                last_processed_block_number, last_block_number = self.get_last_processed_block_number(last_processed_block_number)
-                logging.log(25, "from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
-                last_processed_block_number = self.fetch_events_in_blocks(last_processed_block_number, last_block_number)
-                self.waiting_for_new_blocks( last_processed_block_number, last_block_number)
+                current_block_number, last_block_number = self.get_current_block_number(current_block_number)
+                logging.log(25, "from #" + str(current_block_number) + " to #" + str(last_block_number))
+                current_block_number = self.fetch_events_in_blocks(current_block_number, last_block_number)
+                self.waiting_for_new_blocks( current_block_number, last_block_number)
         except Exception as e:
             raise e
 
-    def fetch_events_in_blocks(self, last_processed_block_number: int, last_block_number: int):
+    def fetch_events_in_blocks(self, current_block_number: int, last_block_number: int):
         """
         @Notice: Iterate over block numbers to decode their transaction hashes and find events
-        @param: last_processed_block_number: int : the last block number that was processed
+        @param: current_block_number: int : the last block number that was processed
         @param: last_block_number: int : the last block number on the blockchain
         @return: int : the last processed block number
         @Dev: If the last_block_number is None, we get the last block number on the blockchain. 
@@ -84,18 +84,18 @@ class Events_Listener():
         try:
             if last_block_number is None:
                 last_block_number = self.get_last_block_number()
-            while last_processed_block_number <= last_block_number:
+            while current_block_number <= last_block_number:
                 # Wait for a thread to finish if the thread pool is full
                 while len(self.threads) >= self.max_threads:
                     for t in self.threads:
                         if not t.is_alive():
                             self.threads.remove(t)
                 # Start a new thread for the current block
-                t = threading.Thread(target=self.explore_block, args=(last_processed_block_number,))
+                t = threading.Thread(target=self.explore_block, args=(current_block_number,))
                 t.start()
                 self.threads.append(t)
-                last_processed_block_number += 1
-            return last_processed_block_number
+                current_block_number += 1
+            return current_block_number
         except Exception as e:
             raise e
 
@@ -138,29 +138,29 @@ class Events_Listener():
         """
         return (receipt['to'] is not None and receipt['to'] == self.contract_address) or (receipt['contractAddress'] is not None and receipt['contractAddress'] == self.contract_address)
 
-    def waiting_for_new_blocks(self, last_processed_block_number, last_block_number):
+    def waiting_for_new_blocks(self, current_block_number, last_block_number):
         """
         @Notice: This function is used to wait for new blocks to be mined and return the latest block number
-        @param: last_processed_block_number: the last block number that was processed
+        @param: current_block_number: the last block number that was processed
         @param: last_block_number: the last block number available
-        @Dev: We keep checking for new blocks until the last_block_number is less than last_processed_block_number.
+        @Dev: We keep checking for new blocks until the last_block_number is less than current_block_number.
         """
         logging.log(25, "waiting for not explored blocks...")
-        while last_block_number < last_processed_block_number:
+        while last_block_number < current_block_number:
             last_block_number = self.get_last_block_number()
-        logging.log(25, "new blocks found, will explore now from #" + str(last_processed_block_number) + " to #" + str(last_block_number))
+        logging.log(25, "new blocks found, will explore now from #" + str(current_block_number) + " to #" + str(last_block_number))
 
-    def get_last_processed_block_number(self, last_processed_block_number):
+    def get_current_block_number(self, current_block_number):
         """
         @Notice: This function will return the last processed block number from the recorded block file
-        @param: last_processed_block_number: the last processed block number
+        @param: current_block_number: the last processed block number
         @return: The last processed block number and the current block number
         """
         try:
             last_block_number = self.get_last_block_number()
-            if last_processed_block_number is None:
-                last_processed_block_number = last_block_number
-            return last_processed_block_number, last_block_number
+            if current_block_number is None:
+                current_block_number = last_block_number
+            return current_block_number, last_block_number
         except Exception as e:
             raise e
 

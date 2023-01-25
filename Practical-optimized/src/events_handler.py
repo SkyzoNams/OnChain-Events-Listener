@@ -96,27 +96,31 @@ class Events_Listener():
             current_page = 1
             start_value = current_block_number
             end_value = last_block_number
+            # manage 1000 results etherscan limit
             from_block = (current_page - 1) * self.results_per_page + start_value
-            to_block = current_page * self.results_per_page + start_value
-            if to_block > end_value:
-                to_block = end_value
+            to_block = self.is_end_higher_than_limit(current_page * self.results_per_page + start_value, last_block_number)
                 
             while current_block_number <= last_block_number:
                 response = requests.get(self.endpoint, params=self.get_api_params(from_block, to_block))
                 for event in response.json()["result"]:
                     self.handle_event(event)
-                    
+
                 current_page += 1
                 current_block_number = to_block + 1
-                from_block = to_block + 1
-                to_block = to_block + self.results_per_page + 1
-                if to_block > last_block_number:
-                    to_block = last_block_number
-                    
+                from_block = to_block + 1 # starting again from last explored block + 1
+                to_block = self.is_end_higher_than_limit(to_block + self.results_per_page + 1, last_block_number)
             return end_value + 1
         except Exception as e:
             raise e
-        
+    
+    def is_end_higher_than_limit(self, to_block, last_block_number):
+        """
+        reduce exploration range if higher than defined end block
+        """
+        if to_block > last_block_number:
+            return last_block_number
+        return to_block
+    
     def get_api_params(self, from_block, to_block):
         """
         @Notice: This function returns the parameters required to query the Etherscan API for logs

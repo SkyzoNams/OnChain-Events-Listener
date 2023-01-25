@@ -113,9 +113,6 @@ You can run all the tests by executing "pytest" on the root of the Practical fol
         - Horizontally scaling the database: You can add more RDS instances to handle the increased load, and use a load balancer to distribute the incoming data across the instances.
         - Optimizing the database: You can optimize the database's performance by indexing the relevant columns and fine-tuning the configuration settings.
 
-- This program has been made with Python. Python is not known to be the fastest programming language and some block processing can take too long if you want to process a large block range.
-However, the program always handles new mined blocks one after the other.
-
 - Going deeper on tests.
 - Adding engineering methods.
 - Find a way to kill the thread as soon as he finished its last task for the version 1.

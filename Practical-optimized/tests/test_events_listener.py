@@ -147,3 +147,8 @@ def test_get_api_params(events_listener):
     assert params["address"] == events_listener.contract_address
     assert params["topic0"] == "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
     assert params["apikey"] == events_listener.etherscan_api_key
+
+def test_is_end_higher_than_limit(events_listener):
+    assert events_listener.is_end_higher_than_limit(10, 1000) == 10
+    assert events_listener.is_end_higher_than_limit(1000, 10) == 10
+    assert events_listener.is_end_higher_than_limit(1000, 1000) == 1000

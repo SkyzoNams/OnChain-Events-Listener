@@ -11,47 +11,30 @@ For this exercise, two version have been made. One basic and a second one optimi
 
 # Getting Started
 
-1.	Clone the repo
+1.  Clone the repo
 2.  Make sure to have Python 3 installed on your machine (developed with Python 3.7.8)
 3.  Go inside the Practical folder from the project root (/Data-Engineer-Coding-Challenge/Practical)
-4.  Create your local venv
-```bash
-python3 -m venv ./venv
-```
-5.  Activate the venv
-```bash
-source venv/bin/activate
-```
-6.	From the project root install all the dependencies
-```bash
-pip install -r requirements.txt
-```
+4.  Create your local venv “python3 -m venv ./venv”
+5.  Activate the venv “source venv/bin/activate”
+6.  From the project root install all the dependencies “pip install -r requirements.txt”
 
 # Usage
 
 You can run the program by executing these commands:
 
 This example will search for Transfer events from the block 13140651 to the latest:
-```bash
-python blocks_listener.py -from 13140651
-```
+    python blocks_listener.py -from 13140651
 
 This example will search for Transfer events from the block 13140651 to the block 13140751:
-```bash
-python blocks_listener.py -from 13140651 -to 13140751
-```
+    python blocks_listener.py -from 13140651 -to 13140751
 
 This example will search for Transfer events from the last mined block and continue to the next mined block:
-```bash
-python blocks_listener.py
-```
+    python blocks_listener.py
 
-The program can not be executed with only an -to parameter without a -from
+The program cannot be executed with only an -to parameter without a -from
 
-You can deactivate the venv by doing:
-```bash
-deactivate
-```
+You can deactivate the venv by doing “deactivate”
+
 
 # How it works (version 1)
 
@@ -114,9 +97,6 @@ This class contains built-in methods:
 A complete testing suits have been implemented on the /tests/test_events_listener.py file using pytest.
 
 You can run all the tests by executing "pytest" on the root of the Practical folder. Please make sure the venv as been activated first.
-```bash
-pytest
-```
 
 # Improvements
 

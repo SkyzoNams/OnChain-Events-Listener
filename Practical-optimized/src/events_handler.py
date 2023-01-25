@@ -30,6 +30,7 @@ class Events_Listener():
         self.total_supply = self.get_total_supply()
         self.endpoint = "https://api.etherscan.io/api"
         self.etherscan_api_key = "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
+        self.results_per_page = 1000
 
     def connect_to_provider(self):
         """
@@ -92,14 +93,14 @@ class Events_Listener():
                 last_block_number = self.get_last_block_number()
 
             # Initialize variables for pagination
-            results_per_page = 1000
             current_page = 1
             start_value = current_block_number
             end_value = last_block_number
-            from_block = (current_page - 1) * results_per_page + start_value
-            to_block = current_page * results_per_page + start_value
+            from_block = (current_page - 1) * self.results_per_page + start_value
+            to_block = current_page * self.results_per_page + start_value
             if to_block > end_value:
                 to_block = end_value
+                
             while current_block_number <= last_block_number:
                 response = requests.get(self.endpoint, params=self.get_api_params(from_block, to_block))
                 for event in response.json()["result"]:
@@ -108,7 +109,7 @@ class Events_Listener():
                 current_page += 1
                 current_block_number = to_block + 1
                 from_block = to_block + 1
-                to_block = to_block + results_per_page + 1
+                to_block = to_block + self.results_per_page + 1
                 if to_block > last_block_number:
                     to_block = last_block_number
                     

@@ -25,7 +25,8 @@ def test_init(events_listener):
     assert events_listener.infura_key == "178f1d53d56842baaf55e41ec9efec61"
     assert events_listener.total_supply == 16969696969
     assert events_listener.endpoint == "https://api.etherscan.io/api"
-
+    assert events_listener.results_per_page == 1000
+    
 def test_get_topic_map(events_listener):
     with open('./files/abi.json') as json_file:
         expected_topic_map = eth_event.get_topic_map(json.load(json_file))

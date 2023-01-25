@@ -10,7 +10,7 @@ You can find the documentation for the Practical test [here](https://github.com/
 
 <h4><p>For this exercise, two version have been made:</p></h4> 
 
--> One [basic](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical) and a second one [optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized).
+One [basic](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical) and a second one [optimized](https://github.com/SkyzoNams/Data-Engineer-Coding-Challenge/blob/main/Practical-optimized).
 
 # Getting Started
 

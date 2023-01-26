@@ -122,6 +122,11 @@ You can run all the tests by executing "pytest" on the root of the Practical fol
 pytest
 ```
 
+If the venv dependencies have just been installed, you should deactivate and activate the venv again to make pytest works.
+```bash
+deactivate && source venv/bin/activate
+```
+
 # Improvements
 
 - Reducing the database accessibility and encrypt the stored data.

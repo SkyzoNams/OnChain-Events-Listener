@@ -262,6 +262,7 @@ class Events_Listener():
         @param transaction_hash: The event transaction_hash
         @param timestamp: the transaction timestamp.
         """
+        print(event)
         self.db_manager.execute(query="""INSERT INTO transfer_events (event_args, transaction_hash, event_name, contract_address, transaction_date)
             SELECT %s, %s, %s, %s, %s
             WHERE NOT EXISTS (

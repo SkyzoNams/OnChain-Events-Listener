@@ -25,11 +25,11 @@ class Events_Listener():
         # Thread pool for fetch_events_in_blocks
         self.threads = []
         self.max_threads = 8
-        self.infura_key = "178f1d53d56842baaf55e41ec9efec61"
+        self.infura_key = "your_infura_api_key"
         self.db_manager = DataBaseManager()
         self.total_supply = self.get_total_supply()
-        self.endpoint = "https://api.etherscan.io/api"
-        self.etherscan_api_key = "S6S2P8NCWF2DWVGKJB46ZY3G46TDIRFUIF"
+        self.endpoint = "your_etherscan_api_endpoint"
+        self.etherscan_api_key = "your_etherscan_api_key"
         self.results_per_page = 1000
 
     def connect_to_provider(self):

@@ -24,7 +24,7 @@ class Events_Listener():
         # Thread pool for fetch_events_in_blocks
         self.threads = []
         self.max_threads = 8
-        self.infura_key = "178f1d53d56842baaf55e41ec9efec61"
+        self.infura_key = "your_infura_api_key"
         self.db_manager = DataBaseManager()
         self.total_supply = self.get_total_supply()
 
